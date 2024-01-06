@@ -11,7 +11,7 @@ export default function Login() {
     const user = useSelector(selectLoggedInUser);
     const error = useSelector(errorSelector)
 
-
+    console.log("user = ",user)
     return (
     <div>
       {user && <Navigate to="/" replace={true}></Navigate>}

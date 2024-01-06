@@ -41,7 +41,6 @@ export const updateProductAsync = createAsyncThunk(
     }
 )
 
-
 export const fetchProductByIdAsync=createAsyncThunk(
     "product/fetchProductById",
     async(id)=>{
@@ -105,7 +104,7 @@ export const productSlice = createSlice({
       })
       .addCase(updateProductAsync.fulfilled, (state,action)=>{
         state.status="idle"
-        const idx = state.products.findIndex(product=>product.id===action.payload.id)
+        const idx = state.products.findIndex(product=>product._id===action.payload._id)
         state.products[idx] = action.payload
       })
   },

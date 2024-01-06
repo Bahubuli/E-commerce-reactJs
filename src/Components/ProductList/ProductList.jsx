@@ -15,7 +15,7 @@ import {
 const ITEMS_PER_PAGE=10;
 
 const sortOptions = [
-  { name: "Best Rating", sort: "rating", order: "desc", current: false },
+  { name: "Best Rating", sort: "averageRating", order: "desc", current: false },
   { name: "Price: Low to High", sort: "price", order: "asc", current: false },
   { name: "Price: High to Low", sort: "price", order: "desc", current: false },
 ];
@@ -36,7 +36,8 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 export default function ProductList() {
-  const filters = useSelector(selectFilters);
+  const filtersOriginal = useSelector(selectFilters);
+  const filters = [...filtersOriginal]
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const dispatch = useDispatch();
   const products = useSelector(selectAllProducts)
@@ -67,7 +68,7 @@ export default function ProductList() {
     else
     {
         const idx = newFilter[section.id].findIndex(el=>el===option.value);
-        console.log(idx)
+
         newFilter[section.id].splice(idx,1);
         if(newFilter[section.id].length===0)
         delete newFilter[section.id]
@@ -79,7 +80,7 @@ export default function ProductList() {
   function handleSort(option) {
     const newSort = { _sort: option.sort, _order: option.order };
     setSort(newSort);
-    console.log(newSort)
+
     setPage(1);
   }
 
@@ -87,6 +88,7 @@ export default function ProductList() {
   {
     setPage(page);
   }
+
 
   return (
     <div>
@@ -98,6 +100,7 @@ export default function ProductList() {
             setMobileFiltersOpen={setMobileFiltersOpen}
             handleFilter={handleFilter}
             filters={filters}
+            filter = {filter}
           />
 
           <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -176,8 +179,8 @@ export default function ProductList() {
             <section aria-labelledby="products-heading" className="pb-24 pt-0">
               <h2 id="products-heading" className="sr-only">Products</h2>
               <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-                <DesktopFilter handleFilter={handleFilter} filters={filters} />
-                <ProductGrid products={products} />
+                <DesktopFilter  handleFilter={handleFilter} filter={filter} filters={filters} />
+                <ProductGrid  products={products} filter={filter}/>
               </div>
             </section>
           </main>
@@ -192,7 +195,8 @@ function MobileFilter({
   setMobileFiltersOpen,
   mobileFiltersOpen,
   handleFilter,
-  filters
+  filters,
+  filter,
 }) {
   return (
     <Transition.Root show={mobileFiltersOpen} as={Fragment}>
@@ -238,7 +242,7 @@ function MobileFilter({
 
               {/* Filters */}
               <form className="mt-4 border-t border-gray-200">
-                {filters.map((section) => (
+                {filters && filters.map((section,sectionIdx) => (
                   <Disclosure
                     as="div"
                     key={section.id}
@@ -278,10 +282,12 @@ function MobileFilter({
                                   name={`${section.id}[]`}
                                   defaultValue={option.value}
                                   type="checkbox"
-                                  defaultChecked={option.checked}
+                                  defaultChecked={filter[section.id]?.includes(filters[sectionIdx].options[optionIdx].value)?"checked":""}
                                   onClick={(e) => {
+
                                     handleFilter(e, section, option);
                                   }}
+
                                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 />
                                 <label
@@ -307,10 +313,11 @@ function MobileFilter({
   );
 }
 
-function DesktopFilter({ handleFilter,filters }) {
-  return (
+function DesktopFilter({ handleFilter,filters,filter }) {
+
+    return (
     <form className="hidden lg:block">
-      {filters.map((section) => (
+      { filters && filters.map((section,sectionIdx) => (
         <Disclosure
           as="div"
           key={section.id}
@@ -341,7 +348,7 @@ function DesktopFilter({ handleFilter,filters }) {
                         name={`${section.id}[]`}
                         defaultValue={option.value}
                         type="checkbox"
-                        defaultChecked={option.checked}
+                        defaultChecked={filter[section.id]?.includes(filters[sectionIdx].options[optionIdx].value)?"checked":""}
                         onClick={(e) => {
                           handleFilter(e, section, option);
                         }}
@@ -367,7 +374,7 @@ function DesktopFilter({ handleFilter,filters }) {
 
 export function Pagination({page,setPage,handlePage,totalItems}) {
 
-    console.log(page,totalItems)
+
     return (
     <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
       <div className="flex flex-1 justify-between sm:hidden">
@@ -421,11 +428,8 @@ export function Pagination({page,setPage,handlePage,totalItems}) {
                cursor-pointer`}
             >
               {idx+1}
-
             </div>)
-
       }
-
             <div
               onClick={()=>{handlePage(Math.min(page+1,Math.ceil(totalItems/ITEMS_PER_PAGE)))}}
               className="relative cursor-pointer inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"

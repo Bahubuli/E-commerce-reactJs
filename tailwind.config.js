@@ -1,18 +1,14 @@
+
+
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
     content: [
-      "./index.html",
-      "./src/**/*.{js,ts,jsx,tsx}",
+      "./src/**/*.{html,js,ts,jsx,tsx}",
     ],
     theme: {
-      extend: {
-        gridTemplateRows: {
-            '[auto,auto,1fr]': 'auto auto 1fr',
-          },
-      },
+      extend: {},
     },
     plugins: [
-        require('@tailwindcss/forms'),
-        require('@tailwindcss/aspect-ratio'),
+        require('@tailwindcss/forms')
     ],
   }

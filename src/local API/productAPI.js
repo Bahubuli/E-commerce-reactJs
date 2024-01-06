@@ -4,7 +4,7 @@ export function fetchAllFilters()
 {
     return new Promise(async(resolve)=>{
         // we will change after this and make dynamic
-        const res = await fetch(API_URL+"/filters");
+        const res = await fetch("/api/filters");
         const data = await res.json();
         resolve(data);
     })
@@ -14,7 +14,7 @@ export function fetchProductById(id)
 {
 
     return new Promise(async(resolve)=>{
-        const res = await fetch(API_URL+`/products/${id}`);
+        const res = await fetch(`/api/products/${id}`);
         const data = await res.json();
         resolve(data.product);
     })
@@ -23,7 +23,7 @@ export function fetchAllProducts()
 {
     return new Promise(async(resolve)=>{
         // we will change after this and make dynamic
-        const res = await fetch(API_URL+"/products");
+        const res = await fetch("/api/products");
         const data = await res.json();
         resolve({data:{products:data.products,totalItems:+data.count}});
     })
@@ -56,7 +56,7 @@ export function fetchProductsByFilter(filter,sort,pagination)
 
 
     return new Promise(async(resolve)=>{
-        const res = await fetch(API_URL+`/products?`+queryString)
+        const res = await fetch(`/api/products?`+queryString)
         const data = await res.json();
         console.log(data)
         resolve({data:{products:data.products,totalItems:+data.count}});
@@ -67,7 +67,7 @@ export function fetchProductsByFilter(filter,sort,pagination)
 export function createProduct(product)
 {
     return new Promise(async(resolve)=>{
-        const res = await fetch(API_URL+"/products/",{
+        const res = await fetch("/api/products/",{
             method:"POST",
             body:JSON.stringify(product),
             headers:{'content-type':'application/json'}
@@ -82,14 +82,13 @@ export function updateProduct(product)
 {
     console.log(product)
     return new Promise(async(resolve)=>{
-        const res = await fetch(API_URL+"/products/"+product._id,{
+        const res = await fetch("/api/products/"+product._id,{
             method:"PATCH",
             body:JSON.stringify(product),
             headers:{'content-type':'application/json'}
         })
 
         const data = await res.json();
-        console.log(data)
         resolve({data});
     })
 }

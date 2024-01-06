@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectUserInfo, updateUserAsync } from "../../Store/userSlice";
 import { useForm } from "react-hook-form";
 import { selectLoggedInUser } from "../../Store/authSlice";
-import { autoLoginAsync } from '../../Store/authSlice';
+
 import { addAddressAsync,addressSelector,getAddressAsync,removeAddressAsync,updateAddressAsync } from "../../Store/addressSlice";
 export default function Profile() {
   const dispatch = useDispatch();
@@ -19,10 +19,6 @@ export default function Profile() {
   console.log(user)
   useEffect(()=>{
     dispatch(getAddressAsync(user))
-  },[])
-
-  useEffect(()=>{
-      dispatch(autoLoginAsync());
   },[])
 
   const addresses = useSelector(addressSelector)

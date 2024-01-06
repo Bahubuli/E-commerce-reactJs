@@ -7,7 +7,7 @@ import {
   updateOrderAsync,
 } from "../../Store/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { XMarkIcon, EyeIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, EyeIcon ,} from "@heroicons/react/24/outline";
 import { discountPrice } from "../../../constants";
 import { updateOrder } from "../../API/orderApi";
 import { Pagination } from "../ProductList/ProductList";
@@ -24,8 +24,8 @@ export default function AdminOrders() {
   const orders = useSelector(selectOrders);
   const totalOrders =orders.reduce((total,order)=> total+order.cartItems.length,0)
   const handleEdit = (order,item) => {
-    setEditableOrderId(order.id);
-    setEditableItemId(item.id)
+    setEditableOrderId(order._id);
+    setEditableItemId(item._id)
   };
 
   const chooseColor = (status)=>{
@@ -172,7 +172,7 @@ export default function AdminOrders() {
           </div>
         </div>
       </div>
-      <Pagination page={page} setPage={setPage} handlePage={handlePage} totalItems= {totalOrders}/>
+
     </Navbar>
   );
 }

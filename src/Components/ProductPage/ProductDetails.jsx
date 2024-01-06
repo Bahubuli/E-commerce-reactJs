@@ -181,7 +181,7 @@ return <div>Loading</div>
 
             <form className="mt-10">
               {/* Colors */}
-              <div>
+              {/* <div>
                 <h3 className="text-sm font-medium text-gray-900">Color</h3>
 
                 <RadioGroup
@@ -221,10 +221,10 @@ return <div>Loading</div>
                       ))}
                   </div>
                 </RadioGroup>
-              </div>
+              </div> */}
 
               {/* Sizes */}
-              <div className="mt-10">
+              {/* <div className="mt-10">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium text-gray-900">Size</h3>
                   <a
@@ -303,7 +303,7 @@ return <div>Loading</div>
                       ))}
                   </div>
                 </RadioGroup>
-              </div>
+              </div> */}
 
               <button
                 onClick={(e)=>{handleCart(e)}}
@@ -320,12 +320,12 @@ return <div>Loading</div>
             <div>
               <h3 className="sr-only">Description</h3>
 
-              <div className="space-y-6">
+              {/* <div className="space-y-6">
                 <p className="text-base text-gray-900">{product.description}</p>
-              </div>
+              </div> */}
             </div>
 
-            <div className="mt-10">
+            {/* <div className="mt-10">
               <h3 className="text-sm font-medium text-gray-900">Highlights</h3>
 
               <div className="mt-4">
@@ -337,7 +337,7 @@ return <div>Loading</div>
                     ))}
                 </ul>
               </div>
-            </div>
+            </div> */}
 
             <div className="mt-10">
               <h2 className="text-sm font-medium text-gray-900">Details</h2>

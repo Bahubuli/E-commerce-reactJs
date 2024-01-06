@@ -122,9 +122,6 @@ const appRouter = createBrowserRouter([
     path:"*",
     element:<NotFound></NotFound>
   },
-
-
-
 ]);
 
 

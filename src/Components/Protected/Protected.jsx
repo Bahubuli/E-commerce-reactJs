@@ -6,9 +6,7 @@ import { useEffect } from 'react';
 export default function Protected({children})
 {
     const dispatch = useDispatch();
-    useEffect(()=>{
-        dispatch(autoLoginAsync())
-    },[])
+
     const user = useSelector(selectLoggedInUser);
     if(!user)
         return <Navigate to="/login"></Navigate>

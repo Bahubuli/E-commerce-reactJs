@@ -4,7 +4,7 @@ export function addToCart(item) {
     return new Promise(async (resolve, reject) => {
       try {
 
-        const res = await fetch(API_URL+"/cart/add", {
+        const res = await fetch("/api/cart/add", {
           method: "POST",
           body: JSON.stringify(item),
           headers: { 'content-type': 'application/json' },
@@ -28,7 +28,7 @@ export function addToCart(item) {
 export function fetchItemsByUserId(user)
 {
     return new Promise(async(resolve)=>{
-        const res = await fetch(API_URL+"/cart?user="+user.email)
+        const res = await fetch("/api/cart?user="+user.email)
         const data = await res.json();
         resolve({data});
     })
@@ -38,7 +38,7 @@ export function updateCart(update)
 {
     return new Promise(async(resolve)=>{
         console.log(update)
-        const res = await fetch(API_URL+"/cart",
+        const res = await fetch("/api/cart",
         {
             method:"PATCH",
             body:JSON.stringify(update),
@@ -54,7 +54,7 @@ export function deleteFromCart(item)
 {
 
     return new Promise(async(resolve,reject)=>{
-        const res = await fetch(API_URL+"/cart"
+        const res = await fetch("/api/cart"
         ,{
             method:"DELETE",
             body:JSON.stringify(item),

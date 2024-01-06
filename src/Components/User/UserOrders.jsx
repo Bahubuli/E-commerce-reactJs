@@ -29,9 +29,7 @@ export default function UserOrders() {
   }, []);
 
 
-  useEffect(()=>{
-      dispatch(autoLoginAsync());
-  },[])
+
   return (
     <div>
         <h1 className="mx-auto text-xl">My Orders</h1>

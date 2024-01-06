@@ -6,13 +6,14 @@ import {
   selectProductById,
   updateProductAsync,
 } from "../../Store/productSlice";
+import Dropzone from "../Dropzone/Dropzone";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams,Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 export default function ProductForm() {
   const filters = useSelector(selectFilters);
 
-  const brands = filters[0].options;
+  const companies = filters[0].options;
   const category = filters[1].options;
   const dispatch = useDispatch();
   const {
@@ -30,24 +31,32 @@ export default function ProductForm() {
 
   }
 
+
   const id = useParams().id;
   console.log(id);
   const selectedProduct = useSelector(selectProductById);
-  console.log(selectedProduct);
+  console.log(selectedProduct)
   useEffect(() => {
     dispatch(fetchProductByIdAsync(id));
   }, [id]);
 
+  const [images,setImages] = useState([
+    selectedProduct ? selectedProduct.thumbnail : "",
+  (selectedProduct && selectedProduct.images) ? selectedProduct.images[0] : "",
+  (selectedProduct && selectedProduct.images) ? selectedProduct.images[1] : "",
+  (selectedProduct && selectedProduct.images) ? selectedProduct.images[2] : "",
+  (selectedProduct && selectedProduct.images) ? selectedProduct.images[3] : "",
+  ]);
   useEffect(() => {
     if (selectedProduct) {
-      setValue("title", selectedProduct.title);
+      setValue("name", selectedProduct.name);
       setValue("description", selectedProduct.description);
       setValue("price", selectedProduct.price);
-      setValue("rating", selectedProduct.rating);
+      setValue("averageRating", selectedProduct.averageRating);
       setValue("discountPercentage", selectedProduct.discountPercentage);
       setValue("thumbnail", selectedProduct.thumbnail);
-      setValue("stock", selectedProduct.stock);
-      setValue("brand", selectedProduct.brand);
+      setValue("inventory", selectedProduct.inventory);
+      setValue("company", selectedProduct.company);
       setValue("category", selectedProduct.category);
     }
   }, [selectedProduct]);
@@ -56,25 +65,21 @@ export default function ProductForm() {
       className="bg-white p-8"
       onSubmit={handleSubmit((data) => {
         let product = { ...data };
-        product.images = [
-          product.image1,
-          product.image2,
-          product.image3,
-          product.image4,
-        ];
+        product.images = images
         delete product["image1"];
         delete product["image2"];
         delete product["image3"];
         delete product["image4"];
         console.log(product);
         if (id) {
-          product.id = id;
-          product.rating =
-            selectedProduct.rating || dispatch(updateProductAsync(product));
-          console.log("update");
+          product._id = id;
+          product.averageRating =
+            selectedProduct.averageRating
+            dispatch(updateProductAsync(product));
+          console.log("update",product);
         } else {
           dispatch(createProductAsync(product));
-          console.log("create");
+
         }
         reset();
       })}
@@ -94,14 +99,13 @@ export default function ProductForm() {
                 htmlFor="username"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Title
+                Name
               </label>
               <div className="mt-2">
                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                   <input
                     type="text"
-                    {...register("title")}
-                    id="title"
+                    {...register("name")}
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="product title"
                   />
@@ -138,7 +142,7 @@ export default function ProductForm() {
               <div className="mt-2">
                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                   <input
-                    {...register("price", { min: 1, max: 10000 })}
+                    {...register("price")}
                     id="price"
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="product price"
@@ -176,7 +180,7 @@ export default function ProductForm() {
               <div className="mt-2">
                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                   <input
-                    {...register("rating")}
+                    {...register("averageRating")}
                     id="rating"
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="product rating"
@@ -195,7 +199,7 @@ export default function ProductForm() {
               <div className="mt-2">
                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                   <input
-                    {...register("stock")}
+                    {...register("inventory")}
                     id="stock"
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="product stock"
@@ -209,11 +213,11 @@ export default function ProductForm() {
                 htmlFor="brand"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Brand
+                Company
               </label>
               <div className="mt-2">
-                <select className="rounded-lg" {...register("brand")}>
-                  {brands.map((brand) => (
+                <select className="rounded-lg" {...register("company")}>
+                  {companies.map((brand) => (
                     <option value={brand.value}>{brand.label}</option>
                   ))}
                 </select>
@@ -234,84 +238,23 @@ export default function ProductForm() {
                 </select>
               </div>
             </div>
-            <div className="sm:col-span-4">
-              <label className="block text-sm font-medium leading-6 text-gray-900">
-                Thumbnail
-              </label>
-              <div className="mt-2">
-                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                  <input
-                    type="text"
-                    {...register("thumbnail")}
-                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-            </div>
 
-            <div className="sm:col-span-4">
-              <label className="block text-sm font-medium leading-6 text-gray-900">
-                Image 1
-              </label>
-              <div className="mt-2">
-                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                  <input
-                    type="text"
-                    {...register("image1")}
-                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="image 1"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="sm:col-span-4">
-              <label className="block text-sm font-medium leading-6 text-gray-900">
-                Image 2
-              </label>
-              <div className="mt-2">
-                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                  <input
-                    type="text"
-                    {...register("image2")}
-                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="image 2"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="sm:col-span-4">
-              <label className="block text-sm font-medium leading-6 text-gray-900">
-                Image 3
-              </label>
-              <div className="mt-2">
-                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                  <input
-                    type="text"
-                    {...register("image3")}
-                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="image 3"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="sm:col-span-4">
-              <label className="block text-sm font-medium leading-6 text-gray-900">
-                Image 4
-              </label>
-              <div className="mt-2">
-                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                  <input
-                    type="text"
-                    {...register("image4")}
-                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="image 4"
-                  />
-                </div>
-              </div>
-            </div>
           </div>
         </div>{" "}
+        <div>
+        <p>Thumbnail</p>
+            <Dropzone setImages={setImages} images={images} idx={0}/>
+        </div>
+        <div className="flex gap-2">
+            {[1,2,3,4].map((x)=>
+            <div key={x}>
+             <p className="text-center"> image {x}</p>
+            <Dropzone setImages={setImages} idx={x} images={images}/>
+            </div>
+            )}
+        </div>
         <div className="flex gap-3 flex-wrap">
+
         <button
           type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -319,7 +262,7 @@ export default function ProductForm() {
           Save
         </button>
         <button
-          type="submit"
+          type="button"
           onClick={handleDelete}
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
@@ -327,7 +270,7 @@ export default function ProductForm() {
         </button>
         <Link to="/admin">
         <button
-          type="submit"
+          type="button"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Cancel

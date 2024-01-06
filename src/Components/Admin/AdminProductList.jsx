@@ -15,7 +15,7 @@ import {
 const ITEMS_PER_PAGE=10;
 
 const sortOptions = [
-  { name: "Best Rating", sort: "rating", order: "desc", current: false },
+  { name: "Best Rating", sort: "averageRating", order: "desc", current: false },
   { name: "Price: Low to High", sort: "price", order: "asc", current: false },
   { name: "Price: High to Low", sort: "price", order: "desc", current: false },
 ];
@@ -464,13 +464,13 @@ function ProductGrid({ products }) {
                   <div>
                     <h3 className="text-sm text-gray-700">
                       <Link to={`/product-details/`+product.id}>
-                     
-                        {product.title}
+
+                        {product.name}
                       </Link>
                     </h3>
                     <p className="mt-1 text-sm text-gray-500 flex gap-1">
                       <StarIcon className="h-5 w-5" fill="grey" />
-                      {product.rating}
+                      {product.averageRating}
                     </p>
                     <p className="mt-1 text-sm text-gray-500">
                       {product.color}
