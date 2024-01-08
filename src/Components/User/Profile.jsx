@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUserInfo, updateUserAsync } from "../../Store/userSlice";
 import { useForm } from "react-hook-form";
 import { selectLoggedInUser } from "../../Store/authSlice";
-
-import { addAddressAsync,addressSelector,getAddressAsync,removeAddressAsync,updateAddressAsync } from "../../Store/addressSlice";
+import { useDropzone } from "react-dropzone";
+import {
+  addAddressAsync,
+  addressSelector,
+  getAddressAsync,
+  removeAddressAsync,
+  updateAddressAsync,
+} from "../../Store/addressSlice";
 export default function Profile() {
   const dispatch = useDispatch();
-    const {
+  const {
     register,
     handleSubmit,
     watch,
@@ -16,12 +22,38 @@ export default function Profile() {
     setValue,
   } = useForm();
   const user = useSelector(selectLoggedInUser);
-  console.log(user)
-  useEffect(()=>{
-    dispatch(getAddressAsync(user))
-  },[])
+  console.log(user);
+  useEffect(() => {
+    dispatch(getAddressAsync(user));
+  }, []);
+ async function  handleFileInputChange(e)
+  {
+    const file = e.target.files[0]
+    const url ='https://api.cloudinary.com/v1_1/dstos3wub/image/upload';
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'vyvkm8op');
+    formData.append("cloud_name","dstos3wub")
 
-  const addresses = useSelector(addressSelector)
+    try {
+        const res = await fetch(url, {
+       method: 'POST',
+       body: formData,
+     })
+     if (!res.ok) {
+       throw new Error(`HTTP error! Status: ${res.status}`);
+     }
+     const data = await res.json();
+     let updatedUser = {...user,displayPicture:data.url}
+     
+     dispatch(updateUserAsync(updatedUser))
+    }
+     catch(err)
+     {
+        console.log(err)
+     }
+    }
+  const addresses = useSelector(addressSelector);
 
   const handleRemove = (e, address) => {
     dispatch(removeAddressAsync(address));
@@ -38,34 +70,73 @@ export default function Profile() {
     setValue("pinCode", address.pinCode);
   };
 
+  const onDrop = useCallback((acceptedFiles) => {
+    setFiles(
+      acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )
+    );
+  }, []);
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: "image/jpeg,image/png",
+  });
   const [activeFormIdx, setActiveFormIdx] = useState(-1);
   const [addAddress, setAddAddress] = useState(false);
   return (
     <div>
       <h1 className="mx-auto text-xl">My Profile</h1>
       {user && (
-        <div className="flex h-full flex-col overflow-y-scroll mx-auto max-w-7xl px-4 bg-white shadow-xl mt-12">
-          <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-            <div className="flex items-start justify-between">
-              <div className="flex items-start justify-between">
-                <h1
-                  className="text-xl font-medium text-gray-900"
-                  id="headlessui-dialog-title-:r2:"
-                  data-headlessui-state="open"
-                >
-                  Name {user.role==="admin" ? "admin" : "user"}
-                </h1>
-              </div>
-            </div>
-            <h3
-              className="text-md font-medium text-gray-900"
-              id="headlessui-dialog-title-:r2:"
-              data-headlessui-state="open"
-            >
-              Email : {user.email ? user.email : ""}
-            </h3>
-          </div>
+        <div className="flex  flex-col overflow-y-scroll mx-auto max-w-7xl px-4 bg-white shadow-xl mt-12">
+          <div className=" flex overflow-hidden h-24  gap-3 overflow-y-auto px-4 sm:px-6">
 
+          <div className="">
+      <div className="relative w-24">
+        <label htmlFor="fileInput" className="cursor-pointer">
+          <img
+            className="w-24 h-24 rounded-full absolute"
+            src={user.displayPicture}
+            alt=""
+          />
+          <div className="w-24 h-24 group hover:bg-gray-200 opacity-60 rounded-full absolute flex justify-center items-center cursor-pointer transition duration-500">
+            <img
+              className="hidden group-hover:block z-0 h-12"
+              src="https://www.svgrepo.com/show/33565/upload.svg"
+              alt=""
+            />
+          </div>
+        </label>
+        <input
+          type="file"
+          id="fileInput"
+          className="hidden"
+          onChange={(e) => handleFileInputChange(e)}
+        />
+      </div>
+    </div>
+            <div>
+              <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between">
+                  <h1
+                    className="text-xl font-medium text-gray-900"
+                    id="headlessui-dialog-title-:r2:"
+                    data-headlessui-state="open"
+                  >
+                    Name {user.role === "admin" ? "admin" : "user"}
+                  </h1>
+                </div>
+              </div>
+              <h3
+                className="text-md font-medium text-gray-900"
+                id="headlessui-dialog-title-:r2:"
+                data-headlessui-state="open"
+              >
+                Email : {user.email ? user.email : ""}
+              </h3>
+            </div>
+          </div>
           <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
             <p>Address</p>
             {addAddress && (
@@ -245,7 +316,7 @@ export default function Profile() {
                     <form
                       noValidate
                       onSubmit={handleSubmit((data) => {
-                        dispatch(updateAddressAsync({...address,...data}));
+                        dispatch(updateAddressAsync({ ...address, ...data }));
                         setActiveFormIdx(-1);
                         reset();
                       })}
@@ -435,7 +506,6 @@ export default function Profile() {
                         className="font-medium text-indigo-600 hover:text-indigo-500"
                         onClick={(e) => handleEdit(e, idx)}
                       >
-
                         Edit
                       </button>
 

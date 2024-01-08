@@ -11,8 +11,9 @@ export const addToCartAsync = createAsyncThunk(
 
 export const fetchItemsByUserIdAsync = createAsyncThunk(
     'cart/fetchItemsByUserId',
-     async(userId)=>{
-        const res = await fetchItemsByUserId(userId);
+     async(user)=>{
+        const res = await fetchItemsByUserId(user);
+        console.log(res.data)
         return res.data;
      }
 )

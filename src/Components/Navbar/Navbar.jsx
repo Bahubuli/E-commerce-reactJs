@@ -1,5 +1,5 @@
 import React from "react";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -8,15 +8,11 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectCartItems } from "../../Store/cartSlice";
+import { useSelector,useDispatch } from "react-redux";
+import { fetchItemsByUserIdAsync, selectCartItems } from "../../Store/cartSlice";
+import { selectLoggedInUser } from "../../Store/authSlice";
 
-const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
+
 const navigation = [
     { name: "ProCart", Link: "/home", current: true },
     {name:"Admin", Link:"/admin"},
@@ -35,8 +31,18 @@ function classNames(...classes) {
 
 export default function Navbar({ children }) {
 
-    const cartItems = useSelector(selectCartItems)
-    console.log(cartItems)
+    const dispatch = useDispatch();
+    const selectedUser = useSelector(selectLoggedInUser)
+    useEffect(()=>{
+        dispatch(fetchItemsByUserIdAsync(selectedUser))
+    },[selectedUser,dispatch])
+    const user = {
+        name:selectedUser.name,
+        email:selectedUser.email,
+        imageUrl:selectedUser.displayPicture
+      };
+
+      const cartItems = useSelector(selectCartItems)
   return (
     <div>
       <div className="min-h-full">
@@ -83,7 +89,7 @@ export default function Navbar({ children }) {
                         <span className="absolute -inset-1.5" />
 
                         <span className="inline-flex items-center rounded-md ml-3 -mb-6 bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">
-                          {cartItems?.length}
+                          {cartItems.length}
                         </span>
 
                           <ShoppingCartIcon
@@ -205,7 +211,7 @@ export default function Navbar({ children }) {
                       </button>
                     </Link>
                     <span className="inline-flex items-center rounded-md  bg-red-50 px-2 py-0.5 text-xs mb-7 -ml-3 font-medium text-red-700 ring-1 ring-inset ring-red-600/20">
-                    {cartItems?.length}
+                    {cartItems.length}
                     </span>
                   </div>
                   <div className="mt-3 space-y-1 px-2">
