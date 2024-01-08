@@ -67,8 +67,10 @@ const orderSlice = createSlice(
             })
             .addCase(updateOrderAsync.fulfilled,(state,action)=>{
                 state.status="idle"
-                const idx = state.orders.findIndex(order=>order.id===action.payload.id)
-                state.orders[idx] = action.payload
+                const idx = state.orders.findIndex(order=>order._id==action.payload.order._id)
+                console.log("idx = ",idx)
+                console.log("payload = ",action.payload)
+                state.orders[idx] = action.payload.order
 
             })
             .addCase(updateOrderAsync.pending,(state)=>{

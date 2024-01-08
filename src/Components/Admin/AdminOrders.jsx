@@ -19,13 +19,12 @@ export default function AdminOrders() {
   const [editableItemId,setEditableItemId] = useState(-1);
   useEffect(() => {
     handlePage(page);
-  }, [page]);
+  }, [page,dispatch]);
 
   const orders = useSelector(selectOrders);
-  const totalOrders =orders.reduce((total,order)=> total+order.cartItems.length,0)
+
   const handleEdit = (order,item) => {
     setEditableOrderId(order._id);
-    setEditableItemId(item._id)
   };
 
   const chooseColor = (status)=>{
@@ -48,16 +47,11 @@ export default function AdminOrders() {
     const pagination = {_page:page,_limit:ITEMS_PER_PAGE};
     dispatch(fetchAllOrdersAsync(pagination));
   }
-  const handleUpdate = (e, order,item) => {
+  const handleUpdate = (e, order) => {
 
-    const idx = order.cartItems.findIndex(x=>x.id===item.id);
-    let items = [...order.cartItems];
-    let updatedItem = {...items[idx],status:e.target.value}
-    items[idx] = updatedItem;
-    let updatedOrder = {...order,cartItems:items}
+    let updatedOrder = {...order,status:e.target.value}
     console.log(updatedOrder)
     dispatch(updateOrderAsync(updatedOrder))
-    setEditableItemId(-1);
     setEditableOrderId(-1)
   };
   return (
@@ -84,13 +78,13 @@ export default function AdminOrders() {
                 <tbody className="text-gray-600 text-sm font-light">
                   {orders &&
                     orders.map((order) =>
-                      order.cartItems.map((item) => (
+
                         <tr className="border-b border-gray-200 hover:bg-gray-100">
                           <td className="py-3 px-6 text-left whitespace-nowrap">
                             <div className="flex items-center">
                               <div className="mr-2"></div>
                               <span className="font-medium">
-                                Order No #{order.id}{" "}
+                                #{order._id}{" "}
                               </span>
                             </div>
                           </td>
@@ -99,35 +93,36 @@ export default function AdminOrders() {
                               <div className="mr-2"></div>
                               <img
                                 className="w-6 h-6 rounded-lg border-gray-200 border -m-1 transform hover:scale-125"
-                                src={item.thumbnail}
+                                src={order.thumbnail}
                               />
                               <span>
-                                {item.title} # {item.quantity} ={" "}
-                                {discountPrice(item)}
+                                {order.name} # {order.quantity} ={" "}
+                                {discountPrice(order)}
                               </span>
                             </div>
                           </td>
                           <td className="py-3 px-6 text-center">
                             <div className="flex items-center justify-center">
-                              <span>{discountPrice(item) * item.quantity}</span>
+                              <span>{discountPrice(order) * order.quantity}</span>
                             </div>
                           </td>
                           <td>
-                            <div>{order.selectedAddress.name}</div>
-                            <div>{order.selectedAddress.phone}</div>
-                            <div>{order.selectedAddress.street}</div>
+                            <div>{order?.address?.name}</div>
+                            <div>{order?.address?.phone}</div>
+                            <div>{order?.address?.street}</div>
                             <div>
-                              {order.selectedAddress.city} ,{" "}
-                              {order.selectedAddress.state}{" "}
-                              {order.selectedAddress.pinCode}{" "}
+                              {order?.address?.city} ,{" "}
+                              {order?.address?.state}{" "}
+                              {order?.address?.pinCode}{" "}
                             </div>
                           </td>
                           <td className="py-3 px-6 text-center">
 
-                            {(order.id===editableOrderId && item.id===editableItemId) ?
+                            {(order._id===editableOrderId) ?
                             <select
                               className="rounded-lg"
-                              onChange={(e) => handleUpdate(e, order,item)}
+                              onChange={(e) => handleUpdate(e, order
+                                )}
                             >
                               <option value="pending">Pending</option>
                               <option value="dispatched">Dispatched</option>
@@ -135,7 +130,7 @@ export default function AdminOrders() {
                               <option value="canceled">canceled</option>
                             </select>
                             :
-                             <span className={`${chooseColor(item.status)} p-1  rounded`}>{item.status}</span>}
+                             <span className={`${chooseColor(order.status)} p-1  rounded`}>{order.status}</span>}
                           </td>
 
                           <td className="py-3 px-6 text-center">
@@ -144,7 +139,7 @@ export default function AdminOrders() {
                                 <EyeIcon onClick={handleShow} />
                               </div>
                               <div
-                                onClick={() => handleEdit(order,item)}
+                                onClick={() => handleEdit(order)}
                                 className="w-6 mr-2 transform hover:text-purple-500 hover:scale-110"
                               >
                                 <svg
@@ -164,7 +159,7 @@ export default function AdminOrders() {
                             </div>
                           </td>
                         </tr>
-                      ))
+
                     )}
                 </tbody>
               </table>

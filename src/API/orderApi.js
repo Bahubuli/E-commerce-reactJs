@@ -27,7 +27,7 @@ export function addOrder(order) {
 export function updateOrder(order) {
     return new Promise(async (resolve) => {
 
-        const res = await fetch(API_URL+"/orders/"+order.id, {
+        const res = await fetch(API_URL+"/orders/"+order._id, {
           method: "PATCH",
           body: JSON.stringify(order),
           headers: { 'content-type': 'application/json' },
