@@ -79,7 +79,13 @@ export default function Login() {
             >
               Log in
             </button>
+
           </div>
+          <div className="flex gap-4">
+                    <button className="bg-[#1D9BF0] w-1/2 py-1 rounded-md text-white font-bold cursor-pointer hover:bg-[#181196]">Google</button>
+                    <button className="bg-[#24292F] w-1/2 py-1 rounded-md text-white font-bold cursor-pointer hover:bg-[#181196]">Github</button>
+          </div>
+
         </form>
 
         <p className="mt-10 text-center text-sm text-gray-500">
@@ -89,7 +95,10 @@ export default function Login() {
           </Link>
         </p>
       </div>
+
+
     </div>
+
   </></div>
   )
 }

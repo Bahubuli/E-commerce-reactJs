@@ -4,7 +4,7 @@ export function addOrder(order) {
     return new Promise(async (resolve, reject) => {
       try {
 
-        const res = await fetch(API_URL+"/orders", {
+        const res = await fetch("/api/orders", {
           method: "POST",
           body: JSON.stringify(order),
           headers: { 'content-type': 'application/json' },
@@ -27,7 +27,7 @@ export function addOrder(order) {
 export function updateOrder(order) {
     return new Promise(async (resolve) => {
 
-        const res = await fetch(API_URL+"/orders/"+order._id, {
+        const res = await fetch("/api/orders/"+order.id, {
           method: "PATCH",
           body: JSON.stringify(order),
           headers: { 'content-type': 'application/json' },
@@ -52,7 +52,7 @@ export function fetchAllOrders(pagination)
           queryString+=`${key}=${pagination[key]}&`
 
       return new Promise(async(resolve)=>{
-          const res = await fetch(API_URL+`/orders?`+queryString)
+          const res = await fetch(`/api/orders?`+queryString)
           const data = await res.json();
           console.log(data)
           const totalOrders = await res.headers.get("X-Total-Count")
@@ -63,7 +63,7 @@ export function fetchAllOrders(pagination)
 export function fetchUserOrders(user)
 {
     return new Promise(async(resolve,reject)=>{
-        const res = await fetch(API_URL+"/orders?user="+user.email);
+        const res = await fetch("/api/orders?user="+user.email);
         const data =await res.json();
         resolve({data});
     })

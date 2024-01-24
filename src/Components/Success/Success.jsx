@@ -9,7 +9,7 @@ export default function Success({order}) {
     const user = useSelector(selectLoggedInUser)
     const dispatch = useDispatch();
     useEffect(()=>{
-        dispatch(resetCartAsync(user.id));
+        dispatch(resetCartAsync(user));
         dispatch(resetOrder())
     },)
     return (
@@ -18,6 +18,7 @@ export default function Success({order}) {
           <div className="text-center">
             <p className="text-base font-semibold text-indigo-600">Order Successfully Placed</p>
             <p className="mt-6 text-base leading-7 text-gray-600">You can check your orders in My Account - My Orders</p>
+
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link
                 to='/home'

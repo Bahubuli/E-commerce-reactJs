@@ -1,4 +1,3 @@
-import { API_URL } from "../../constants";
 export function fetchLoggedInUserOrders(userId)
 {
     return new Promise(async(resolve)=>{
@@ -21,16 +20,15 @@ export function fetchLoggedInUser(userId)
 
 export function updateUser(userInfo)
 {
-
+    console.log(userInfo)
     return new Promise(async(resolve)=>{
-        const res = await fetch(API_URL+"/users/"+userInfo._id
+        const res = await fetch("http://localhost:3000/users/"+userInfo.id
         ,{
             method:"PATCH",
             body:JSON.stringify(userInfo),
             headers:{"content-type":"application/json"}
         })
         const data = await res.json();
-        console.log(data)
         resolve({data})
     })
 }

@@ -29,6 +29,7 @@ export const createProductAsync = createAsyncThunk(
     'products/createProduct',
     async(product)=>{
         const res = await createProduct(product);
+        console.log(res.data)
         return res.data;
     }
 )
@@ -45,6 +46,7 @@ export const fetchProductByIdAsync=createAsyncThunk(
     "product/fetchProductById",
     async(id)=>{
         const res = await fetchProductById(id);
+        console.log("single product",res)
         return res;
     }
 )
@@ -58,7 +60,6 @@ export const productSlice = createSlice({
     selectedProduct:{}
   },
   reducers: {
-
   },
   extraReducers: (builder) => {
     builder
@@ -92,6 +93,7 @@ export const productSlice = createSlice({
       })
       .addCase(fetchProductByIdAsync.fulfilled, (state,action)=>{
         state.selectedProduct= action.payload
+        state.status = "idle"
       })
       .addCase(createProductAsync.pending, (state)=>{
         state.status = "loading";
@@ -110,7 +112,7 @@ export const productSlice = createSlice({
   },
 });
 
-
+export const selectStatus =(state)=>state.product.status;
 export const selectFilters = (state)=>state.product.filters
 export const selectTotalItems = (state)=> state.product.totalItems
 export const selectAllProducts = (state) => state.product.products;

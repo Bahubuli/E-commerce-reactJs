@@ -5,7 +5,7 @@ import { authStateSelector } from "../Store/authSlice";
 export function createUser(userData)
 {
     return new Promise(async(resolve,reject)=>{
-        const res = await fetch("/api/auth/register"
+        const res = await fetch(API_URL+"/auth/register"
         ,{
             method:"POST",
             body:JSON.stringify(userData),
@@ -27,7 +27,7 @@ export function checkUser(loginInfo)
 {
 
     return new Promise(async(resolve,reject)=>{
-        const res = await fetch("/api/auth/login",
+        const res = await fetch(API_URL+"/auth/login",
         {
             method:"POST",
             body:JSON.stringify(loginInfo),
@@ -62,7 +62,7 @@ export function verifyMail(verifyBody)
 {
 
     return new Promise(async(resolve,reject)=>{
-        const res = await fetch("/api/auth/verify-email",
+        const res = await fetch(API_URL+"/auth/verify-email",
         {
             method:"POST",
             body:JSON.stringify(verifyBody),
@@ -77,7 +77,7 @@ export function verifyMail(verifyBody)
 export function resetPass(verifyBody)
 {
     return new Promise(async(resolve,reject)=>{
-        const res = await fetch("/api/auth/reset-password",
+        const res = await fetch(API_URL+"/auth/reset-password",
         {
             method:"POST",
             body:JSON.stringify(verifyBody),
@@ -92,7 +92,7 @@ export function resetPass(verifyBody)
 export function forgotPassword(mail)
 {
     return new Promise(async(resolve,reject)=>{
-        const res = await fetch("/api/auth/forgot-password",
+        const res = await fetch(API_URL+"/auth/forgot-password",
         {
             method:"POST",
             body:JSON.stringify(mail),
@@ -106,7 +106,7 @@ export function forgotPassword(mail)
 export function autoLogin()
 {
     return new Promise(async(resolve,reject)=>{
-        const res = await fetch("/api/auth/auto-login",
+        const res = await fetch(API_URL+"/auth/auto-login",
         {
             method:"POST"
         })
@@ -115,7 +115,7 @@ export function autoLogin()
         resolve({data});
     })
 }
-// const { data } = await axios.post('/api/v1/auth/verify-email', {
+// const { data } = await axios.post('/v1/auth/verify-email', {
 //     verificationToken: query.get('token'),
 //     email: query.get('email'),
 // });

@@ -1,16 +1,22 @@
 import {useDispatch, useSelector} from 'react-redux';
 import {Navigate} from 'react-router-dom';
-import { autoLoginAsync, selectLoggedInUser } from '../../Store/authSlice';
+import { authStateSelector, autoLoginAsync, errorSelector, selectLoggedInUser } from '../../Store/authSlice';
 import { useEffect } from 'react';
-
+import Loader from '../Loader/Loader';
 export default function Protected({children})
 {
     const dispatch = useDispatch();
-
+    const authState = useSelector(authStateSelector)
     const user = useSelector(selectLoggedInUser);
+    const authError = useSelector(errorSelector)
+    console.log("user = ",user)
+    useEffect(()=>{
+        console.log("auto login ")
+        dispatch(autoLoginAsync());
+    },[])
+
     if(!user)
         return <Navigate to="/login"></Navigate>
-    if(!user && user.role!=='admin')
-        return <Navigate to="/"></Navigate>
-   return children
+    if(user)
+    return children
 }

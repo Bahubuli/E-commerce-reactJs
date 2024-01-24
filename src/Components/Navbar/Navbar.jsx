@@ -12,7 +12,7 @@ import { useSelector,useDispatch } from "react-redux";
 import { fetchItemsByUserIdAsync, selectCartItems } from "../../Store/cartSlice";
 import { selectLoggedInUser } from "../../Store/authSlice";
 
-
+import {UserIcon } from '@heroicons/react/20/solid'
 const navigation = [
     { name: "ProCart", Link: "/home", current: true },
     {name:"Admin", Link:"/admin"},
@@ -96,7 +96,6 @@ export default function Navbar({ children }) {
                             className="h-6 w-6 mb-4"
                             aria-hidden="true"
                           />
-
                       </button>
                       </Link>
                       {/* Profile dropdown */}
@@ -185,7 +184,7 @@ export default function Navbar({ children }) {
                 <div className="border-t border-gray-700 pb-3 pt-4">
                   <div className="flex items-center px-5">
                     <div className="flex-shrink-0">
-                      <img
+                       <img
                         className="h-10 w-10 rounded-full"
                         src={user.imageUrl}
                         alt=""

@@ -12,7 +12,6 @@ import { useParams,Link } from "react-router-dom";
 import { useEffect,useState } from "react";
 export default function ProductForm() {
   const filters = useSelector(selectFilters);
-
   const companies = filters[0].options;
   const category = filters[1].options;
   const dispatch = useDispatch();
@@ -30,22 +29,24 @@ export default function ProductForm() {
     dispatch(updateProductAsync(product))
 
   }
-
-
   const id = useParams().id;
   console.log(id);
-  const selectedProduct = useSelector(selectProductById);
-  console.log(selectedProduct)
   useEffect(() => {
+    if(id)
     dispatch(fetchProductByIdAsync(id));
   }, [id]);
 
+
+  const selectedProduct = useSelector(selectProductById);
+  console.log(selectedProduct)
+
+
   const [images,setImages] = useState([
-    selectedProduct ? selectedProduct.thumbnail : "",
-  (selectedProduct && selectedProduct.images) ? selectedProduct.images[0] : "",
-  (selectedProduct && selectedProduct.images) ? selectedProduct.images[1] : "",
-  (selectedProduct && selectedProduct.images) ? selectedProduct.images[2] : "",
-  (selectedProduct && selectedProduct.images) ? selectedProduct.images[3] : "",
+    (selectedProduct && selectedProduct.thumbnail) ? selectedProduct.thumbnail : "x",
+  (selectedProduct && selectedProduct.images) ? selectedProduct.images[0] : "x",
+  (selectedProduct && selectedProduct.images) ? selectedProduct.images[1] : "x",
+  (selectedProduct && selectedProduct.images) ? selectedProduct.images[2] : "x",
+  (selectedProduct && selectedProduct.images) ? selectedProduct.images[3] : "x",
   ]);
   useEffect(() => {
     if (selectedProduct) {
@@ -58,18 +59,32 @@ export default function ProductForm() {
       setValue("inventory", selectedProduct.inventory);
       setValue("company", selectedProduct.company);
       setValue("category", selectedProduct.category);
+
+      setImages([
+        (selectedProduct && selectedProduct.thumbnail) ? selectedProduct.thumbnail : "",
+      (selectedProduct && selectedProduct.images) ? selectedProduct.images[0] : "",
+      (selectedProduct && selectedProduct.images) ? selectedProduct.images[1] : "",
+      (selectedProduct && selectedProduct.images) ? selectedProduct.images[2] : "",
+      (selectedProduct && selectedProduct.images) ? selectedProduct.images[3] : "",
+      ])
     }
   }, [selectedProduct]);
+
+  if( id && Object.keys(selectedProduct).length===0)
+  return <div>Loading</div>
+
   return (
     <form
       className="bg-white p-8"
       onSubmit={handleSubmit((data) => {
         let product = { ...data };
-        product.images = images
+        product.images = images.slice(1)
         delete product["image1"];
         delete product["image2"];
         delete product["image3"];
         delete product["image4"];
+        delete product.thumbnail;
+        product.thumbnail = images[0];
         console.log(product);
         if (id) {
           product._id = id;

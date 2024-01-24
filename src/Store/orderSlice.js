@@ -56,6 +56,7 @@ const orderSlice = createSlice(
                 state.orders=action.payload
                 state.currentOrderPlaced = true;
                 state.orderId = action.payload
+                state.status = "idle"
             })
             .addCase(fetchAllOrdersAsync.pending,(state)=>{
                 state.status="loading"
@@ -64,6 +65,7 @@ const orderSlice = createSlice(
                 state.orders = action.payload.orders
                 state.totalOrders = action.payload.totalOrders
                 state.currentOrderPlaced = true;
+                state.status = "idle"
             })
             .addCase(updateOrderAsync.fulfilled,(state,action)=>{
                 state.status="idle"
@@ -82,6 +84,7 @@ const orderSlice = createSlice(
             .addCase(fetchUserOrdersAsync.fulfilled,(state,action)=>{
                 state.orders = action.payload
                 state.currentOrderPlaced = true;
+                state.status = "idle"
             })
         }
     }

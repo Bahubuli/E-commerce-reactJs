@@ -1,7 +1,6 @@
 import React from "react";
 import { discountPrice } from "../../../constants";
 import { useState,useEffect } from "react";
-import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectProductById } from "../../Store/productSlice";
@@ -9,29 +8,9 @@ import { useParams } from "react-router-dom";
 import { fetchProductByIdAsync } from "../../Store/productSlice";
 import { addToCartAsync } from "../../Store/cartSlice";
 import { selectLoggedInUser } from "../../Store/authSlice";
-
-const reviews = { href: "#", average: 4, totalCount: 117 };
-const sizes= [
-    { name: 'XXS', inStock: false },
-    { name: 'XS', inStock: true },
-    { name: 'S', inStock: true },
-    { name: 'M', inStock: true },
-    { name: 'L', inStock: true },
-    { name: 'XL', inStock: true },
-    { name: '2XL', inStock: true },
-    { name: '3XL', inStock: true },
-  ]
-  const highlights= [
-    'Hand cut and sewn locally',
-    'Dyed with our proprietary colors',
-    'Pre-washed & pre-shrunk',
-    'Ultra-soft 100% cotton',
-  ]
- const colors= [
-    { name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
-    { name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400' },
-    { name: 'Black', class: 'bg-gray-900', selectedClass: 'ring-gray-900' },
-  ]
+import { StarIcon } from '@heroicons/react/20/solid'
+import Reviews from "../Reviews/Reviews";
+import StarRating from "../StarRating/StarRating";
 
 
 function classNames(...classes) {
@@ -46,8 +25,36 @@ export default function ProductDetails() {
       }, [id]);
 
   const product = useSelector(selectProductById);
-
+  console.log(product)
   const user = useSelector(selectLoggedInUser);
+
+  const ratingCounts = Array.from({ length: 5 }, (_, index) => ({ rating: 5 - index, count: 0 }));
+  product?.reviews?.forEach((review) => {
+    const rating = review.rating;
+    if (rating >= 1 && rating <= 5) {
+        const index = 5 - rating;
+        ratingCounts[index].count++;
+    }
+});
+
+  const reviews = {
+    average: product.averageRating,
+    totalCount: product.numOfReviews,
+    counts: ratingCounts,
+    featured: product.reviews
+  }
+//   {
+//     "_id": "659e83f2f3ad4d41072fe1ae",
+//     "rating": 4,
+//     "title": "very bad product",
+//     "comment": "so bakwas so useless ",
+//     "user": "658c3da528e70e50ea745ffe",
+//     "product": "658ba96a5d2ce6788cffc089",
+//     "userName": "jitendra",
+//     "createdAt": "2024-01-10T11:48:02.947Z",
+//     "updatedAt": "2024-01-10T11:48:02.947Z",
+//     "__v": 0
+// }
 
   const handleCart = (e)=>{
     e.preventDefault();
@@ -147,8 +154,11 @@ return <div>Loading</div>
           {/* Options */}
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <h2 className="sr-only">Product information</h2>
+            <p className="text-3xl tracking-tight text-gray-400 line-through">
+            ₹ {product.price}
+            </p>
             <p className="text-3xl tracking-tight text-gray-900">
-              {discountPrice(product)}
+              ₹ {discountPrice(product)}
             </p>
 
             {/* Reviews */}
@@ -349,6 +359,44 @@ return <div>Loading</div>
           </div>
         </div>
       </div>
+     <Reviews reviews = {reviews}/>
+     <GiveRating/>
     </div>
   );
+}
+
+
+function GiveRating()
+{
+    return(
+
+  <div className="py-3 sm:max-w-xl sm:mx-auto">
+    <div className="bg-white min-w-1xl flex flex-col rounded-xl shadow-lg">
+      <div className="px-12 py-5">
+        <h2 className="text-gray-800 text-3xl font-semibold">Your opinion matters to us!</h2>
+      </div>
+      <div className="bg-gray-200 w-full flex flex-col items-center">
+        <div className="flex flex-col items-center py-6 space-y-3">
+          <span className="text-lg text-gray-800">How was quality of the call?</span>
+          <div className="flex space-x-3">
+        <StarRating/>
+          </div>
+        </div>
+        <div className="w-3/4 flex flex-col">
+          <textarea rows="3" className="p-4 text-gray-500 rounded-xl resize-none">Leave a message, if you want</textarea>
+          <button className="py-3 my-8 text-lg bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white">Rate now</button>
+        </div>
+      </div>
+      <div className="h-20 flex items-center justify-center">
+        <a href="#" className="text-gray-600">Maybe later</a>
+      </div>
+    </div>
+
+    <div className="mt-8 text-gray-700">
+      Crédits <a className="font-bold" href="https://dribbble.com/shots/12052834-Rating-popup">Goga</a>
+    </div>
+
+  </div>
+
+    )
 }
