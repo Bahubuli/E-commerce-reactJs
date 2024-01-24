@@ -1,11 +1,14 @@
 import { StarIcon,UserIcon } from '@heroicons/react/20/solid'
-
-
+import StarRating from "../StarRating/StarRating";
+import {useState} from 'react'
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Reviews({reviews}) {
+
+    const [showReview,setShowReview] = useState(false);
+
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:px-8 lg:py-32">
@@ -76,12 +79,13 @@ export default function Reviews({reviews}) {
               If you’ve used this product, share your thoughts with other customers
             </p>
 
-            <a
-              href="#"
+            <button
+            onClick={()=>setShowReview(!showReview)}
               className="mt-6 inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50 sm:w-auto lg:w-full"
             >
               Write a review
-            </a>
+            </button>
+           {showReview &&  <GiveRating setShowReview={setShowReview}/>}
           </div>
         </div>
 
@@ -126,3 +130,30 @@ export default function Reviews({reviews}) {
     </div>
   )
 }
+
+
+function GiveRating({setShowReview}) {
+    return (
+      <div className=" w-full flex flex-col py-5 gap-6 items-center">
+        <div className="flex w-full flex-col px-3">
+          <h4 className="text-xl">Give Rating</h4>
+          <StarRating />
+        </div>
+        <div className="w-full flex flex-col px-3">
+        <h4 className="text-xl">Write Review</h4>
+          <textarea
+            rows="3"
+            className="p-4 text-gray-500 rounded-xl resize-none"
+          ></textarea>
+        </div>
+        <div className="flex gap-3">
+          <button onClick={()=>setShowReview(false)} className="py-2 px-3 text-lg bg-gradient-to-r bg-indigo-600 rounded-xl text-white">
+            Save
+          </button>
+          <button className="py-2 px-3 text-lg bg-gradient-to-r bg-gray-600  rounded-xl text-white">
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }

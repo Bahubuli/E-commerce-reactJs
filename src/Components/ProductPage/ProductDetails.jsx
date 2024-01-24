@@ -1,6 +1,6 @@
 import React from "react";
 import { discountPrice } from "../../../constants";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectProductById } from "../../Store/productSlice";
@@ -8,9 +8,8 @@ import { useParams } from "react-router-dom";
 import { fetchProductByIdAsync } from "../../Store/productSlice";
 import { addToCartAsync } from "../../Store/cartSlice";
 import { selectLoggedInUser } from "../../Store/authSlice";
-import { StarIcon } from '@heroicons/react/20/solid'
+import { StarIcon } from "@heroicons/react/20/solid";
 import Reviews from "../Reviews/Reviews";
-import StarRating from "../StarRating/StarRating";
 
 
 function classNames(...classes) {
@@ -18,54 +17,62 @@ function classNames(...classes) {
 }
 
 export default function ProductDetails() {
-    const dispatch = useDispatch();
-    const id = useParams().id;
-    useEffect(() => {
-        dispatch(fetchProductByIdAsync(id));
-      }, [id]);
+  const dispatch = useDispatch();
+  const id = useParams().id;
+  useEffect(() => {
+    dispatch(fetchProductByIdAsync(id));
+  }, [id]);
 
   const product = useSelector(selectProductById);
-  console.log(product)
+  console.log(product);
   const user = useSelector(selectLoggedInUser);
 
-  const ratingCounts = Array.from({ length: 5 }, (_, index) => ({ rating: 5 - index, count: 0 }));
+  const ratingCounts = Array.from({ length: 5 }, (_, index) => ({
+    rating: 5 - index,
+    count: 0,
+  }));
   product?.reviews?.forEach((review) => {
     const rating = review.rating;
     if (rating >= 1 && rating <= 5) {
-        const index = 5 - rating;
-        ratingCounts[index].count++;
+      const index = 5 - rating;
+      ratingCounts[index].count++;
     }
-});
+  });
 
   const reviews = {
     average: product.averageRating,
     totalCount: product.numOfReviews,
     counts: ratingCounts,
-    featured: product.reviews
-  }
-//   {
-//     "_id": "659e83f2f3ad4d41072fe1ae",
-//     "rating": 4,
-//     "title": "very bad product",
-//     "comment": "so bakwas so useless ",
-//     "user": "658c3da528e70e50ea745ffe",
-//     "product": "658ba96a5d2ce6788cffc089",
-//     "userName": "jitendra",
-//     "createdAt": "2024-01-10T11:48:02.947Z",
-//     "updatedAt": "2024-01-10T11:48:02.947Z",
-//     "__v": 0
-// }
+    featured: product.reviews,
+  };
+  //   {
+  //     "_id": "659e83f2f3ad4d41072fe1ae",
+  //     "rating": 4,
+  //     "title": "very bad product",
+  //     "comment": "so bakwas so useless ",
+  //     "user": "658c3da528e70e50ea745ffe",
+  //     "product": "658ba96a5d2ce6788cffc089",
+  //     "userName": "jitendra",
+  //     "createdAt": "2024-01-10T11:48:02.947Z",
+  //     "updatedAt": "2024-01-10T11:48:02.947Z",
+  //     "__v": 0
+  // }
 
-  const handleCart = (e)=>{
+  const handleCart = (e) => {
     e.preventDefault();
-    const newItem = {...product,productId:product._id,quantity:1,user:user.email,status:"pending"};
-    delete newItem['_id'];
-    console.log(newItem)
-    dispatch(addToCartAsync({...newItem,quantity:1,user:user.email}))
-  }
+    const newItem = {
+      ...product,
+      productId: product._id,
+      quantity: 1,
+      user: user.email,
+      status: "pending",
+    };
+    delete newItem["_id"];
+    console.log(newItem);
+    dispatch(addToCartAsync({ ...newItem, quantity: 1, user: user.email }));
+  };
 
-if(Object.keys(product).length===0)
-return <div>Loading</div>
+  if (Object.keys(product).length === 0) return <div>Loading</div>;
 
   return (
     <div className="bg-white">
@@ -75,28 +82,29 @@ return <div>Loading</div>
             role="list"
             className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
           >
-            {product.breadcrumbs && product.breadcrumbs.map((breadcrumb) => (
-              <li key={breadcrumb.id}>
-                <div className="flex items-center">
-                  <a
-                    href={breadcrumb.href}
-                    className="mr-2 text-sm font-medium text-gray-900"
-                  >
-                    {breadcrumb.name}
-                  </a>
-                  <svg
-                    width={16}
-                    height={20}
-                    viewBox="0 0 16 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                    className="h-5 w-4 text-gray-300"
-                  >
-                    <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                  </svg>
-                </div>
-              </li>
-            ))}
+            {product.breadcrumbs &&
+              product.breadcrumbs.map((breadcrumb) => (
+                <li key={breadcrumb.id}>
+                  <div className="flex items-center">
+                    <a
+                      href={breadcrumb.href}
+                      className="mr-2 text-sm font-medium text-gray-900"
+                    >
+                      {breadcrumb.name}
+                    </a>
+                    <svg
+                      width={16}
+                      height={20}
+                      viewBox="0 0 16 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                      className="h-5 w-4 text-gray-300"
+                    >
+                      <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
+                    </svg>
+                  </div>
+                </li>
+              ))}
             <li className="text-sm">
               <a
                 href={product.href}
@@ -155,7 +163,7 @@ return <div>Loading</div>
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <h2 className="sr-only">Product information</h2>
             <p className="text-3xl tracking-tight text-gray-400 line-through">
-            ₹ {product.price}
+              ₹ {product.price}
             </p>
             <p className="text-3xl tracking-tight text-gray-900">
               ₹ {discountPrice(product)}
@@ -316,7 +324,9 @@ return <div>Loading</div>
               </div> */}
 
               <button
-                onClick={(e)=>{handleCart(e)}}
+                onClick={(e) => {
+                  handleCart(e);
+                }}
                 type="submit"
                 className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
@@ -359,44 +369,8 @@ return <div>Loading</div>
           </div>
         </div>
       </div>
-     <Reviews reviews = {reviews}/>
-     <GiveRating/>
+      <Reviews reviews={reviews} />
+
     </div>
   );
-}
-
-
-function GiveRating()
-{
-    return(
-
-  <div className="py-3 sm:max-w-xl sm:mx-auto">
-    <div className="bg-white min-w-1xl flex flex-col rounded-xl shadow-lg">
-      <div className="px-12 py-5">
-        <h2 className="text-gray-800 text-3xl font-semibold">Your opinion matters to us!</h2>
-      </div>
-      <div className="bg-gray-200 w-full flex flex-col items-center">
-        <div className="flex flex-col items-center py-6 space-y-3">
-          <span className="text-lg text-gray-800">How was quality of the call?</span>
-          <div className="flex space-x-3">
-        <StarRating/>
-          </div>
-        </div>
-        <div className="w-3/4 flex flex-col">
-          <textarea rows="3" className="p-4 text-gray-500 rounded-xl resize-none">Leave a message, if you want</textarea>
-          <button className="py-3 my-8 text-lg bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white">Rate now</button>
-        </div>
-      </div>
-      <div className="h-20 flex items-center justify-center">
-        <a href="#" className="text-gray-600">Maybe later</a>
-      </div>
-    </div>
-
-    <div className="mt-8 text-gray-700">
-      Crédits <a className="font-bold" href="https://dribbble.com/shots/12052834-Rating-popup">Goga</a>
-    </div>
-
-  </div>
-
-    )
 }
