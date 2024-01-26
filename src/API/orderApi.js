@@ -68,3 +68,18 @@ export function fetchUserOrders(user)
         resolve({data});
     })
 }
+
+export function finishOrder(orderData)
+{
+    return new Promise(async(resolve,reject)=>{
+        const res = await fetch("/api/orders/finish-order",
+        {
+            method:"POST",
+            body:JSON.stringify(orderData),
+            headers: { 'content-type': 'application/json' }
+        })
+        const data = await res.json();
+        resolve({data});
+        
+    })
+}

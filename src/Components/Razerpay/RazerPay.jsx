@@ -2,7 +2,9 @@ import { useEffect, useRef } from 'react';
 import crypto from 'crypto-js';
 import PropTypes from 'prop-types';
 import Axios from 'axios';
-
+import { selectCartItems } from "../../Store/cartSlice";
+import { useDispatch, useSelector } from 'react-redux';
+import { finishOrderAsync } from '../../Store/orderSlice';
 // Function to load script and append in DOM tree.
 const loadScript = src => new Promise((resolve) => {
   const script = document.createElement('script');
@@ -25,11 +27,13 @@ const RenderRazorpay = ({
   keySecret,
   currency,
   amount,
-  user
+  user,
+  setPaymentStatus
 }) => {
   const paymentId = useRef(null);
   const paymentMethod = useRef(null);
-
+  let items = useSelector(selectCartItems);
+  const dispatch = useDispatch();
   // To load razorpay checkout modal script.
   const displayRazorpay = async (options) => {
     const res = await loadScript(
@@ -60,19 +64,9 @@ const RenderRazorpay = ({
 
   // informing server about payment
   const handlePayment = async (status, orderDetails = {}) => {
-    const res = await fetch("/api/payment",{
-        method:"POST",
-        body:JSON.stringify(
-            {
-                status,
-                orderDetails,
-            }
-        ),
-        headers:{"content-type":"application/json"}
-    })
+    items = items.map(item=>({...item,...orderDetails}))
+    dispatch(finishOrderAsync(items));
 
-    const data =await res.json();
-    console.log(data);
   };
 
 
@@ -84,13 +78,14 @@ const RenderRazorpay = ({
     name:user.name,
     order_id:orderId,
 
-    handler:(res)=>{
+    handler:(response)=>{
         console.log("success");
-        console.log(res);
-        paymentId.current = res.razorpay_payment_id;
+        setPaymentStatus("success")
+        console.log(response)
+        paymentId.current = response.razorpay_payment_id;
         const succeeded = crypto.HmacSHA256(`${orderId}|${response.razorpay_payment_id}`, keySecret).toString() === response.razorpay_signature;
 
-        // If successfully authorized. Then we can consider the payment as successful.
+       // If successfully authorized. Then we can consider the payment as successful.
         if (succeeded) {
           handlePayment('succeeded', {
             orderId,
@@ -106,7 +101,8 @@ const RenderRazorpay = ({
 
     },
     modal: {
-        confirm_close: true, // this is set to true, if we want confirmation when clicked on cross button.
+        confirm_close: true, // this is set to true,
+        //  if we want confirmation when clicked on cross button.
         // This function is executed when checkout modal is closed
         // There can be 3 reasons when this modal is closed.
         ondismiss: async (reason) => {
@@ -149,7 +145,7 @@ const RenderRazorpay = ({
     displayRazorpay(options);
   }, []);
 
-  return null;
+ return (null)
 };
 
 export default RenderRazorpay;

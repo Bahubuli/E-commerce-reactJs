@@ -9,6 +9,7 @@ import {
   selectCartItems,
   updateCartAsync,
   deleteFromCartAsync,
+  addAddressToItems,
 } from "../../Store/cartSlice";
 import { useForm } from "react-hook-form";
 import { selectLoggedInUser } from "../../Store/authSlice";
@@ -53,6 +54,7 @@ export default function Checkout() {
       user:user._id,
       totalAmount:discountPrice(item)*item.quantity
     }));
+    dispatch(addAddressToItems(items));
     dispatch(addOrderAsync({"items":items}))
     // const order = {
     //   cartItems,
@@ -89,7 +91,7 @@ export default function Checkout() {
   return (
     <>
       {cartItems.length === 0 && <Navigate to="/" replace={true}></Navigate>}
-      {orderPlaced && <Navigate to="/order-success" replace={true}></Navigate>}
+      {orderPlaced && <Navigate to="/payment" replace={true}></Navigate>}
       <div className="grid grid-cols-1  lg:grid-cols-5   mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 gap-10">
         <div className="lg:col-span-3 bg-white p-4 mt-12">
           <form

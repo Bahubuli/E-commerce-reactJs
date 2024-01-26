@@ -28,6 +28,7 @@ import { appStore } from './Store/Store.js'
 
 import Home from './Components/Home/Home.jsx'
 import { authStateSelector, autoLoginAsync, errorSelector, selectLoggedInUser } from './Store/authSlice';
+import Payment from './Components/Payment/Payment.jsx'
 function App() {
 
     const appRouter = createBrowserRouter([
@@ -98,9 +99,9 @@ function App() {
           element:<ProductPage />,
         },
         {
-          path:"/order-success",
+          path:"/payment",
           element: <Protected>
-      <Success/>
+      <Payment/>
       </Protected>
         },
         {
@@ -115,6 +116,12 @@ function App() {
           <ProfilePage></ProfilePage>
       </Protected>
         },
+        {
+            path:"/success",
+            element: <Protected>
+          <Success/>
+        </Protected>
+          },
         {
           path:"/logout",
           element:<Logout></Logout>

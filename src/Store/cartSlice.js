@@ -46,7 +46,13 @@ const cartSlice = createSlice({
     initialState:{
         items:[]
     },
-    reducers:{},
+    reducers:{
+        addAddressToItems(state,action)
+        {
+            console.log(action.payload)
+            state.items = action.payload
+        }
+    },
     extraReducers:(builder)=>{
         builder
         .addCase(addToCartAsync.pending,(state)=>{
@@ -88,6 +94,6 @@ const cartSlice = createSlice({
         })
     }
 })
-
+export const {addAddressToItems} = cartSlice.actions
 export const selectCartItems = (state)=> state.cart.items
 export default cartSlice.reducer;
