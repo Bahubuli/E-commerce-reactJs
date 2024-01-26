@@ -9,9 +9,7 @@ export default function Protected({children})
     const authState = useSelector(authStateSelector)
     const user = useSelector(selectLoggedInUser);
     const authError = useSelector(errorSelector)
-    console.log("user = ",user)
     useEffect(()=>{
-        console.log("auto login ")
         dispatch(autoLoginAsync());
     },[])
 

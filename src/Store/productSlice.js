@@ -29,7 +29,7 @@ export const createProductAsync = createAsyncThunk(
     'products/createProduct',
     async(product)=>{
         const res = await createProduct(product);
-        console.log(res.data)
+
         return res.data;
     }
 )
@@ -46,7 +46,7 @@ export const fetchProductByIdAsync=createAsyncThunk(
     "product/fetchProductById",
     async(id)=>{
         const res = await fetchProductById(id);
-        console.log("single product",res)
+
         return res;
     }
 )

@@ -16,10 +16,10 @@ export function addToCart(item) {
         }
 
         const data = await res.json();
-        console.log(data)
+
         resolve({ data });
       } catch (error) {
-        console.error('Error in addToCart:', error);
+
         reject(error); // Reject the promise with the encountered error
       }
     });
@@ -37,7 +37,7 @@ export function fetchItemsByUserId(user)
 export function updateCart(update)
 {
     return new Promise(async(resolve)=>{
-        console.log(update)
+
         const res = await fetch(API_URL+"/cart",
         {
             method:"PATCH",
@@ -45,7 +45,7 @@ export function updateCart(update)
             headers:{'content-type':'application/json'}
         })
         const data = await res.json();
-        console.log(data)
+
         resolve({data})
     })
 }
@@ -61,7 +61,7 @@ export function deleteFromCart(item)
             headers:{'Content-Type': 'application/json',}
         });
         const data = await res.json();
-        console.log(data)
+
         resolve({data:data})
     })
 }
@@ -71,7 +71,7 @@ export function resetCart(userId)
     return new Promise(async(resolve)=>{
         const res = await fetchItemsByUserId(userId);
         const items = res.data;
-        console.log(items)
+       
         for(let i=0;i<items.length;i++)
         {
             await deleteFromCart(items[i]);

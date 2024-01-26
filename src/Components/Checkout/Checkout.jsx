@@ -26,8 +26,7 @@ export default function Checkout() {
   const user = useSelector(selectLoggedInUser);
   const orderPlaced = useSelector(selectOrderStatus);
   const addresses = useSelector(addressSelector);
-  console.log("addresses", addresses);
-  console.log("user", user);
+
   useEffect(() => {
     dispatch(getAddressAsync(user));
   }, []);
@@ -46,13 +45,13 @@ export default function Checkout() {
   const handleOrder = () => {
     const order = {};
     let items = cartItems;
-
     items = items.map((item) => ({
       ...item,
       address: selectedAddress,
       status: "pending",
       paymentMethod: paymentMethod,
       user:user._id,
+      totalAmount:discountPrice(item)*item.quantity
     }));
     dispatch(addOrderAsync({"items":items}))
     // const order = {
@@ -86,7 +85,7 @@ export default function Checkout() {
     0
   );
 
-  console.log(orderPlaced);
+
   return (
     <>
       {cartItems.length === 0 && <Navigate to="/" replace={true}></Navigate>}

@@ -36,7 +36,7 @@ export function checkUser(loginInfo)
         if(res.status===200)
         {
              const data = await res.json();
-             console.log(data)
+
              resolve(data);
         }
         else
@@ -85,7 +85,8 @@ export function resetPass(verifyBody)
         })
 
         const data = await res.json();
-        console.log(data)
+
+
         resolve({data})
     })
 }
@@ -111,7 +112,7 @@ export function autoLogin()
             method:"POST"
         })
         const data = await res.json();
-        console.log("autologin data",data);
+       
         resolve({data});
     })
 }

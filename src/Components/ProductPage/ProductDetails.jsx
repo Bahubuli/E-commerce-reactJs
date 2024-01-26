@@ -24,7 +24,7 @@ export default function ProductDetails() {
   }, [id]);
 
   const product = useSelector(selectProductById);
-  console.log(product);
+
   const user = useSelector(selectLoggedInUser);
 
   const ratingCounts = Array.from({ length: 5 }, (_, index) => ({
@@ -68,7 +68,7 @@ export default function ProductDetails() {
       status: "pending",
     };
     delete newItem["_id"];
-    console.log(newItem);
+
     dispatch(addToCartAsync({ ...newItem, quantity: 1, user: user.email }));
   };
 

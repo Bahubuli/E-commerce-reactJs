@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { createBrowserRouter,RouterProvider } from 'react-router-dom'
 import { fetchItemsByUserIdAsync } from './Store/cartSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectLoggedInUser,autoLoginAsync } from './Store/authSlice'
+
 import { fetchLoggedInUserAsync } from './Store/userSlice'
 import Protected from "./Components/Protected/Protected.jsx";
 import NotFound from './Components/NotFound/NotFound.jsx'
@@ -25,7 +25,9 @@ import Checkout from "./Components/Checkout/Checkout.jsx";
 import ProductPage from "./Components/ProductPage/ProductPage.jsx";
 import { Provider } from "react-redux";
 import { appStore } from './Store/Store.js'
+
 import Home from './Components/Home/Home.jsx'
+import { authStateSelector, autoLoginAsync, errorSelector, selectLoggedInUser } from './Store/authSlice';
 function App() {
 
     const appRouter = createBrowserRouter([
@@ -141,7 +143,6 @@ function App() {
         },
       ]);
 
-
   return (
     <Provider store={appStore}>
     <RouterProvider router={appRouter} />
@@ -151,7 +152,6 @@ function App() {
 }
 
 export default App
-
 
 {/* <Auth0Provider
     domain="bahubali.us.auth0.com"

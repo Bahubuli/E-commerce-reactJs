@@ -10,7 +10,7 @@ import { discountPrice } from "../../../constants";
 export default function Cart() {
   const [open, setOpen] = useState(true);
   const cartItems = useSelector(selectCartItems);
-  console.log(cartItems)
+
   const dispatch = useDispatch();
   const handleQuantity = (e,product)=>{
     dispatch(updateCartAsync({...product,quantity:+e.target.value,totalAmount:e.target.value*discountPrice(product)}))
@@ -19,8 +19,6 @@ export default function Cart() {
   const handleRemove = (e,product)=>{
       dispatch(deleteFromCartAsync(product))
   }
-
-
   const totalAmount  = cartItems.reduce((amount,item)=>discountPrice(item)*item.quantity+amount,0);
   const totalItems = cartItems.reduce((amount,item)=>item.quantity+amount,0);
   return (

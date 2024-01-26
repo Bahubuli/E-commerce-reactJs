@@ -16,9 +16,9 @@ export function addOrder(order) {
         }
 
         const data = await res.json();
+        console.log("order res = ",data)
         resolve({ data });
       } catch (error) {
-        console.error('Error in addToCart:', error);
         reject(error); // Reject the promise with the encountered error
       }
     });
@@ -27,7 +27,7 @@ export function addOrder(order) {
 export function updateOrder(order) {
     return new Promise(async (resolve) => {
 
-        const res = await fetch("/api/orders/"+order.id, {
+        const res = await fetch("/api/orders/"+order._id, {
           method: "PATCH",
           body: JSON.stringify(order),
           headers: { 'content-type': 'application/json' },

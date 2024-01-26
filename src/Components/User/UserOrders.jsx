@@ -23,7 +23,6 @@ export default function UserOrders() {
   let orders = useSelector(selectOrders);
   if(orders)
   orders = [...orders].reverse();
-  console.log(orders);
   useEffect(() => {
     dispatch(fetchUserOrdersAsync(user));
   }, []);

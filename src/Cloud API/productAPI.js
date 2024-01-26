@@ -58,7 +58,7 @@ export function fetchProductsByFilter(filter,sort,pagination)
     return new Promise(async(resolve)=>{
         const res = await fetch(API_URL+`/products?`+queryString)
         const data = await res.json();
-        console.log(data)
+
         resolve({data:{products:data.products,totalItems:+data.count}});
     })
 }
@@ -80,7 +80,7 @@ export function createProduct(product)
 
 export function updateProduct(product)
 {
-    console.log(product)
+
     return new Promise(async(resolve)=>{
         const res = await fetch(API_URL+"/products/"+product._id,{
             method:"PATCH",
@@ -89,7 +89,6 @@ export function updateProduct(product)
         })
 
         const data = await res.json();
-        console.log(data)
         resolve({data});
     })
 }

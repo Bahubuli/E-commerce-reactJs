@@ -6,11 +6,11 @@ export function getAddress(user)
         try {
             const res = await fetch(`/api/address?email=${user.email}`)
             const data = await res.json();
-            console.log(data)
+
             resolve({data});
 
         } catch (error) {
-            console.log("error")
+        
             reject(error);
         }
     })
